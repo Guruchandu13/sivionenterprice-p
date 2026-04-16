@@ -1,16 +1,14 @@
 
-const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
+const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
 const connectDB = require("./config/db");
 const notFound = require("./middleware/notFound.middleware");
 const errorHandler = require("./middleware/error.middleware");
-
-const seedDefaultAdmin = require('./config/seedAdmin');
-
-dotenv.config();
+const seedDefaultAdmin = require("./config/seedAdmin");
 
 const app = express();
 
@@ -35,7 +33,6 @@ app.get("/", (req, res) => {
 app.use("/api/auth", require("./routes/auth.router"));
 app.use("/api/projects", require("./routes/project.router"));
 app.use("/api/blogs", require("./routes/blog.router"));
-app.use("/api/inquiries", require("./routes/inquiry.router"));
 app.use("/api/quotes", require("./routes/quote.router"));
 app.use("/api/jobs", require("./routes/job.router"));
 app.use("/api/applications", require("./routes/application.router"));
@@ -54,6 +51,7 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`🔒 Allowed Origin (CORS): ${process.env.FRONTEND_URL}`);
     });
   } catch (error) {
     console.error("❌ Server startup failed:", error.message);

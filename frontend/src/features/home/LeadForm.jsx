@@ -1,31 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../lib/api';
 
 const LeadForm = () => {
   const navigate = useNavigate();
   const [formState, setFormState] = useState({ name: '', email: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError('');
     
-    // Email Notification Integration Logic
-    // In production, this would call your backend or EmailJS
     try {
-      console.log("Initiating enterprise email notification protocol...");
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      setIsSubmitted(true);
+      const response = await api.post('/contacts', {
+        fullName: formState.name,
+        email: formState.email,
+        message: formState.message,
+        subject: 'General Inquiry from Website',
+        recaptchaToken: recaptchaToken
+      });
       
-      // Auto-redirect after delay to show success state
-      setTimeout(() => {
-        navigate('/thank-you');
-      }, 3000);
+      if (response.data.success) {
+        setIsSubmitted(true);
+        setTimeout(() => {
+          navigate('/thank-you');
+        }, 3000);
+      }
     } catch (error) {
       console.error("Critical: Form submission failed", error);
+      setError(error.response?.data?.message || 'Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -136,12 +147,21 @@ const LeadForm = () => {
                      ></textarea>
                   </div>
                   
-                  {/* reCAPTCHA UI Integration */}
-                  <div className="flex items-center gap-3 py-2">
-                    <div className="w-5 h-5 rounded bg-white/10 border border-white/20 flex items-center justify-center overflow-hidden">
-                      <CheckCircle className="w-3 h-3 text-brand-cyan opacity-40" />
+                  {error && (
+                    <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+                      {error}
                     </div>
-                    <p className="text-[10px] text-slate-500 font-medium">Verified by Google reCAPTCHA. <a href="#" className="underline hover:text-brand-cyan">Privacy</a> & <a href="#" className="underline hover:text-brand-cyan">Terms</a> apply.</p>
+                  )}
+
+                  {/* reCAPTCHA UI Integration */}
+                  <div className="py-2">
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                      onChange={(token) => setRecaptchaToken(token)}
+                      onExpired={() => setRecaptchaToken(null)}
+                      theme="dark"
+                    />
                   </div>
                   
                   <button 

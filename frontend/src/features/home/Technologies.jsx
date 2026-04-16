@@ -1,9 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { 
+  Atom, 
+  Wind, 
+  Terminal, 
+  Coffee, 
+  Leaf, 
+  Cloud, 
+  Boxes, 
+  Database, 
+  Zap, 
+  Share2, 
+  Box,
+  Framer
+} from 'lucide-react';
 
-const techs = [
-  "React", "Framer Motion", "Tailwind CSS", "Node.js", "Java", "Spring Boot", 
-  "AWS", "Docker", "Kubernetes", "PostgreSQL", "MongoDB", "GraphQL"
+const techItems = [
+  { name: "React", icon: Atom, hoverColor: "group-hover:text-blue-400" },
+  { name: "Framer Motion", icon: Framer, hoverColor: "group-hover:text-pink-500" },
+  { name: "Tailwind CSS", icon: Wind, hoverColor: "group-hover:text-cyan-400" },
+  { name: "Node.js", icon: Terminal, hoverColor: "group-hover:text-emerald-500" },
+  { name: "Java", icon: Coffee, hoverColor: "group-hover:text-orange-500" },
+  { name: "Spring Boot", icon: Leaf, hoverColor: "group-hover:text-green-500" },
+  { name: "AWS", icon: Cloud, hoverColor: "group-hover:text-amber-500" },
+  { name: "Docker", icon: Box, hoverColor: "group-hover:text-blue-500" },
+  { name: "Kubernetes", icon: Boxes, hoverColor: "group-hover:text-blue-600" },
+  { name: "PostgreSQL", icon: Database, hoverColor: "group-hover:text-indigo-400" },
+  { name: "MongoDB", icon: Zap, hoverColor: "group-hover:text-green-400" },
+  { name: "GraphQL", icon: Share2, hoverColor: "group-hover:text-pink-400" }
 ];
 
 const Technologies = () => {
@@ -22,16 +46,18 @@ const Technologies = () => {
         <motion.div 
           className="flex whitespace-nowrap"
           animate={{ x: ["0%", "-50%"] }}
-          transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
+          transition={{ repeat: Infinity, ease: "linear", duration: 40 }}
         >
           {/* We duplicate the array to allow infinite seamless scroll */}
-          {[...techs, ...techs].map((tech, idx) => (
-            <div 
+          {[...techItems, ...techItems].map((tech, idx) => (
+            <motion.div 
               key={idx} 
-              className="inline-flex items-center justify-center px-8 py-4 mx-4 glass rounded-full min-w-[200px]"
+              whileHover={{ scale: 1.05, y: -5 }}
+              className="inline-flex items-center gap-4 px-8 py-4 mx-4 glass rounded-2xl min-w-[220px] cursor-pointer group transition-all duration-300 hover:border-white/20 hover:bg-white/5"
             >
-              <span className="text-xl font-semibold text-gray-400">{tech}</span>
-            </div>
+              <tech.icon className={`w-6 h-6 text-gray-400 transition-colors duration-300 ${tech.hoverColor} group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]`} />
+              <span className="text-lg font-semibold text-gray-400 transition-colors duration-300 group-hover:text-white">{tech.name}</span>
+            </motion.div>
           ))}
         </motion.div>
       </div>

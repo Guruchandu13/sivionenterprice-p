@@ -1,18 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Linkedin, Twitter, Github, Loader2 } from 'lucide-react';
+import api from '../../lib/api';
 
 const Footer = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [email, setEmail] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const recaptchaRef = useRef(null);
 
-  const handleSubscribe = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
+    if (!recaptchaToken) {
+      alert("Please check the reCAPTCHA");
+      return;
+    }
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      const response = await api.post('/subscribers', { email, recaptchaToken });
+      if (response.data.success) {
+        alert("Subscribed successfully!");
+        setEmail('');
+        setRecaptchaToken(null);
+        recaptchaRef.current.reset();
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Subscription failed.");
+    } finally {
       setIsSubmitting(false);
-      navigate('/thank-you');
-    }, 1000);
+    }
   };
 
   return (
@@ -91,6 +109,15 @@ const Footer = () => {
                 required
                 className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-brand-cyan transition-all outline-none"
               />
+              <div className="py-2 transform scale-[0.8] origin-left">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                  theme="dark"
+                  onChange={(token) => setRecaptchaToken(token)}
+                  onExpired={() => setRecaptchaToken(null)}
+                />
+              </div>
               <button disabled={isSubmitting} className="w-full bg-brand-cyan text-[#040C09] py-3 rounded-xl font-black text-sm hover:bg-white transition-all flex items-center justify-center shadow-[0_4px_20px_rgba(34,211,238,0.2)]">
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Subscribe Now"}
               </button>
