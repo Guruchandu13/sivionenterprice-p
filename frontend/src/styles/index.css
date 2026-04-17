@@ -48,13 +48,13 @@ body {
               #0A192F;
 }
 
-/* Glassmorphism - Refined for White/Cyan Mix */
+/* Glassmorphism - Refined for better readability */
 .glass {
-  background: rgba(255, 255, 255, 0.03); /* Subtle white tint */
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  background: rgba(10, 25, 47, 0.7); /* Match brand-dark with high opacity */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 .glass-accent {
