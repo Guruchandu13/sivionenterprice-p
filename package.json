@@ -4,7 +4,7 @@
   "description": "Root package to delegate commands to the Backend for deployment",
   "private": true,
   "scripts": {
-    "start": "node Backend/index.js",
+    "start": "cd Backend && node index.js",
     "install-backend": "npm install --prefix Backend",
     "postinstall": "npm run install-backend"
   }
