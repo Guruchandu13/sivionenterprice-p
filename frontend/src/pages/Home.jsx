@@ -12,6 +12,7 @@ import StatsCounter from '../features/home/StatsCounter';
 import FAQ from '../features/home/FAQ';
 import CTABanner from '../features/home/CTABanner';
 import LeadForm from '../features/home/LeadForm';
+import BlogPreview from '../features/home/BlogPreview';
 
 const Home = () => {
   return (
@@ -24,6 +25,7 @@ const Home = () => {
       <IndustrySolutions />
       <Process />
       <CaseStudies />
+      <BlogPreview />
       <Testimonials />
       <StatsCounter />
       <FAQ />

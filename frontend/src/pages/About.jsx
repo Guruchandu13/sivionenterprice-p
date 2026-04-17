@@ -14,9 +14,13 @@ const About = () => {
             We are a premium enterprise technology hub focused on delivering scalable, secure, and hyper-premium software solutions. 
             Our team consists of elite architects and developers who bridge the gap between business objectives and technical reality.
           </p>
-          <button className="bg-brand-cyan text-white px-8 py-4 rounded-full font-bold hover:bg-brand-dark transition-all shadow-[0_0_20px_rgba(0,212,255,0.2)]">
+          <a 
+            href="/Sivion_Company_Profile.pdf" 
+            download="Sivion_Company_Profile.pdf"
+            className="inline-block bg-brand-cyan text-[#040D09] px-8 py-4 rounded-full font-bold hover:bg-white transition-all shadow-[0_0_40px_rgba(34,211,238,0.3)] hover:shadow-2xl"
+          >
             Download Company Profile
-          </button>
+          </a>
         </motion.div>
         
         <div className="py-12 border-t border-white/5">
