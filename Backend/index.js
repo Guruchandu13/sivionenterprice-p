@@ -1,4 +1,3 @@
-
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require("express");
@@ -12,24 +11,36 @@ const seedDefaultAdmin = require("./config/seedAdmin");
 
 const app = express();
 
-const allowedOrigins = process.env.FRONTEND_URL 
-  ? process.env.FRONTEND_URL.split(',').map(url =\u003e url.trim()) 
-  : [];
+// BUG FIX 1: Fallback to localhost in dev when FRONTEND_URL is not set
+// Previously: [] — which blocked ALL origins in development
+const allowedOrigins = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+  : ['http://localhost:5173', 'http://localhost:3000'];
 
-app.use(cors({
+const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (server-to-server, curl, mobile apps)
     if (!origin) return callback(null, true);
-    
+
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.error(`🚫 CORS blocked for origin: ${origin}`);
-      callback(new Error('CORS policy match failed'), false);
+      console.error(`CORS blocked for origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'), false);
     }
   },
   credentials: true,
-}));
+  // BUG FIX 2: Explicitly allow methods and headers
+  // Previously missing — caused preflight to reject POST/PUT with JSON body
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+};
+
+// BUG FIX 3: Handle OPTIONS preflight requests explicitly
+// Previously missing — caused "no Access-Control-Allow-Origin" on preflight
+app.options('*', cors(corsOptions));
+app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -60,15 +71,15 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
-    await connectDB();        // wait for DB
-    await seedDefaultAdmin(); // then seed admin
+    await connectDB();
+    await seedDefaultAdmin();
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🔒 Allowed Origin (CORS): ${process.env.FRONTEND_URL}`);
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Allowed Origins (CORS): ${JSON.stringify(allowedOrigins)}`);
     });
   } catch (error) {
-    console.error("❌ Server startup failed:", error.message);
+    console.error("Server startup failed:", error.message);
     process.exit(1);
   }
 };
