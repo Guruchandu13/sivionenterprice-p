@@ -11,7 +11,7 @@ const Hero = () => {
   const rotate = useTransform(scrollY, [0, 500], [0, 45]);
 
   return (
-    <section ref={containerRef} className="relative min-h-screen flex items-start lg:items-center overflow-hidden bg-[#040D09] pt-32 pb-20 lg:pt-20">
+    <section ref={containerRef} className="relative min-h-[90vh] flex items-start lg:items-center overflow-hidden bg-[#040D09] pt-44 pb-20 lg:pt-32">
       
       {/* --- CINEMATIC AMBIENCE --- */}
       <div className="absolute inset-0 z-0">
