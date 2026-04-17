@@ -1,0 +1,11 @@
+{
+  "name": "sivion-enterprise-hub-root",
+  "version": "1.0.0",
+  "description": "Root package to delegate commands to the Backend for deployment",
+  "private": true,
+  "scripts": {
+    "start": "node Backend/index.js",
+    "install-backend": "npm install --prefix Backend",
+    "postinstall": "npm run install-backend"
+  }
+}

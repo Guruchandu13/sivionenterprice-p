@@ -42,7 +42,7 @@ app.use("/api/contacts", require("./routes/contact.router"));
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
